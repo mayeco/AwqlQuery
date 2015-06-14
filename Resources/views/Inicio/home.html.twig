@@ -1,0 +1,15 @@
+{% extends '::twbslayout.html.twig' %}
+
+{%- block body -%}
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-xs-6 col-md-4">
+                <a class="btn btn-default btn-primary btn-lg" href="{{ path('redirect_authenticate') }}">Authenticate</a>
+            </div>
+
+        </div>
+    </div>
+
+{%- endblock -%}

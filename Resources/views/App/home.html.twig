@@ -1,0 +1,86 @@
+{% extends '::twbslayout.html.twig' %}
+
+{%- block body -%}
+
+    <h2>AWQL Query</h2>
+    {{ form(form) }}
+
+    <div id="display_response" style="display:none;">
+        <h2>Response</h2>
+        <div id="respuesta"></div>
+    </div>
+
+{%- endblock -%}
+
+{%- block footerjs -%}
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function processSuccessJson(data) {
+                // enable send button
+                $('#form_send').prop( "disabled", false );
+
+                // no data exit...
+                if(!data){
+                    return;
+                }
+
+                //error...
+                if(data.result != "OK" ){
+                    alert (data.message);
+                    console.log(data.exception);
+                    return;
+                }
+
+                var daterange = data.xml["date-range"];
+                var reportname = data.xml["report-name"];
+                var table = data.xml["table"];
+
+                var columns = table.columns["column"];
+                var tablehtml = '<table class="table table-condensed table-striped"><thead><tr>';
+                $.each(columns, function(key, value) {
+                    tablehtml += '<th>' + value["@display"] + '</th>';
+                });
+
+                tablehtml += '</tr><tbody>';
+
+                var row = table["row"];
+                $.each(row, function(key, value) {
+                    tablehtml += '<tr>';
+
+                    $.each(value, function(nkey, subvalue) {
+                        if(nkey == "@cost"){
+                            subvalue = "$ " + subvalue / 1000000;
+                        }
+                        tablehtml += '<td>' + subvalue + '</td>';
+                    });
+
+                    tablehtml += '</tr>';
+                });
+
+                tablehtml += "</tbody></table>";
+
+                $('#respuesta').html(tablehtml);
+                console.log("response OK!");
+                $('#display_response').show();
+
+            }
+
+            function showRequest(formData, jqForm, options) {
+                // disable send button
+                $('#form_send').prop( "disabled", true );
+                return true;
+            }
+
+            $('form').ajaxForm({
+                dataType: 'json',
+                success: processSuccessJson,
+                error: processSuccessJson,
+                beforeSubmit:  showRequest
+            });
+        });
+    </script>
+
+{%- endblock -%}
