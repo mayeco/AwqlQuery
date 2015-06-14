@@ -10,7 +10,7 @@ Example here: http://apprepo.noip.us
 
 - Your Keyword preformance during last 30 days
 
-        select Date, Clicks, Impressions, Cost, KeywordText from KEYWORDLESS_QUERY_REPORT during LAST_30_DAYS
+        select Date, Clicks, Impressions, Cost, KeywordText from KEYWORDS_PERFORMANCE_REPORT during LAST_30_DAYS
 
 ## Requeriments
 
